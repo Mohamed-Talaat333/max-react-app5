@@ -7,6 +7,8 @@ import Checkout from "./Checkout";
 
 const Cart = (props) => {
   const [isCheckout, setIsCheckout] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [doneSubmit, setDoneSubmit] = useState(false);
   const cartCtx = useContext(CartContext);
   const totalAmount = `$${cartCtx.totalAmount.toFixed(2)}`;
   const hasItems = cartCtx.items.length > 0;
@@ -21,6 +23,22 @@ const Cart = (props) => {
 
   const orderHandler = () => {
     setIsCheckout(true);
+  };
+
+  const submitOrderHandler = async (userData) => {
+    // setIsSubmitting(true);
+    await fetch(
+      "https://react-food-order-app-cce41-default-rtdb.firebaseio.com/orders.json",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          user: userData,
+          orderedItems: cartCtx.items,
+        }),
+      }
+    );
+    // setIsSubmitting(false);
+    // setDoneSubmit(true);
   };
 
   const cartItems = (
@@ -51,8 +69,8 @@ const Cart = (props) => {
     </div>
   );
 
-  return (
-    <Modal onHideCart={props.onHideCart}>
+  const modalContent = (
+    <>
       {cartItems}
 
       <div className={classes.total}>
@@ -60,9 +78,19 @@ const Cart = (props) => {
         <span>{totalAmount}</span>
       </div>
 
-      {isCheckout && <Checkout onCancel={props.onHideCart} />}
+      {isCheckout && (
+        <Checkout onCancel={props.onHideCart} onConfirm={submitOrderHandler} />
+      )}
       {!isCheckout && modalActions}
-    </Modal>
+    </>
+  );
+
+  return (
+    <Modal onHideCart={props.onHideCart}>
+      {!isSubmitting && !doneSubmit && modalContent}
+      {isSubmitting && <p>Your request is processing ...</p>}
+      {!isSubmitting && doneSubmit && <p>Your request is successfull ...</p>}
+      </Modal>
   );
 };
 
