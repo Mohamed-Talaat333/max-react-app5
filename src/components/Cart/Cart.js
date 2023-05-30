@@ -26,19 +26,19 @@ const Cart = (props) => {
   };
 
   const submitOrderHandler = async (userData) => {
-    // setIsSubmitting(true);
-    await fetch(
-      "https://react-food-order-app-cce41-default-rtdb.firebaseio.com/orders.json",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          user: userData,
-          orderedItems: cartCtx.items,
-        }),
-      }
-    );
-    // setIsSubmitting(false);
-    // setDoneSubmit(true);
+    setIsSubmitting(true);
+    await fetch("https://react-food-order-app-cce41-default-rtdb.firebaseio.com/orders.json", {
+      method: "POST",
+      body: JSON.stringify({
+        user: userData,
+        orderedItems: cartCtx.items,
+      }),
+    });
+
+    setIsSubmitting(false);
+    setDoneSubmit(true);
+
+    cartCtx.clearCart();
   };
 
   const cartItems = (
@@ -78,9 +78,7 @@ const Cart = (props) => {
         <span>{totalAmount}</span>
       </div>
 
-      {isCheckout && (
-        <Checkout onCancel={props.onHideCart} onConfirm={submitOrderHandler} />
-      )}
+      {isCheckout && <Checkout onCancel={props.onHideCart} onConfirm={submitOrderHandler} />}
       {!isCheckout && modalActions}
     </>
   );
@@ -89,8 +87,18 @@ const Cart = (props) => {
     <Modal onHideCart={props.onHideCart}>
       {!isSubmitting && !doneSubmit && modalContent}
       {isSubmitting && <p>Your request is processing ...</p>}
-      {!isSubmitting && doneSubmit && <p>Your request is successfull ...</p>}
-      </Modal>
+      {!isSubmitting && doneSubmit && (
+        <>
+          <p>Your request is successfull ...</p>
+
+          <div className={classes.actions}>
+            <button className={classes["button--alt"]} onClick={props.onHideCart}>
+              Close
+            </button>
+          </div>
+        </>
+      )}
+    </Modal>
   );
 };
 

@@ -28,8 +28,8 @@ const AvailableMeals = () => {
           });
         }
 
-        console.log(data);
-        console.log(loadedMeals);
+        // console.log(data);
+        // console.log(loadedMeals);
 
         setMealsItems(loadedMeals);
         setIsLoading(false);

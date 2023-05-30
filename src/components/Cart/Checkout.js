@@ -43,7 +43,6 @@ const Checkout = (props) => {
     }
 
     props.onConfirm({name: enteredName, street: enteredStreet, postalCode: enteredPostal, city: enteredCity});
-        
   };
 
   return (
@@ -72,7 +71,7 @@ const Checkout = (props) => {
         <button type='button' onClick={props.onCancel}>
           Cancel
         </button>
-        <button className={classes.submit} onClick={props.onConfirm}>Confirm</button>
+        <button className={classes.submit} onClick={confirmHandler}>Confirm</button>
       </div>
     </form>
   );
